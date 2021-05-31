@@ -20,10 +20,10 @@ export const getBranchName = () => {
  * @param {string} string - Category alias.
  * @returns {string} Returns url download path.
  */
-export const getZipDownloadUrl = (zipName, categoryName) => {
+export const getZipDownloadUrl = (zipName, categoryName, language) => {
   const branchName = getBranchName() || BASE_BRANCH;
   const localZipUrl = `http://localhost:${DEV_PORT}/api/zip/${zipName}`;
-  const remoteZipUrl = `https://raw.githubusercontent.com/${GITHUB_NAME}/${BASE_PATH_URL}/${branchName}/public/contents/${categoryName}/zips/${zipName}`;
+  const remoteZipUrl = `https://raw.githubusercontent.com/${GITHUB_NAME}/${BASE_PATH_URL}/${branchName}/public/locales/${language}/categories/${categoryName}/zips/${zipName}`;
 
   const fileUrl = isDev ? localZipUrl : remoteZipUrl;
 

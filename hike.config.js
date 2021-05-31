@@ -2,35 +2,25 @@ const path = require("path");
 const fs = require("fs");
 
 const HIKES_BASE_URL = "volt-mx-tutorials";
-const HIKES_CONTENT_PATH = "./public/contents";
+
+// en-US by default
+const HIKES_CONTENT_PATH = "./public/locales/en-US/categories";
+
+const PROD_URL =
+  process.env.NODE_ENV === "production" ? `/${HIKES_BASE_URL}` : "";
 
 // get all hikes categories directory names
 const getHikeDirectories = () =>
   fs
     .readdirSync(HIKES_CONTENT_PATH, { withFileTypes: true })
-    .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => dirent.name);
+    .filter((dir) => dir.isDirectory())
+    .map((dir) => dir.name);
 
 // initialize landing page (home and list of hikes)
 const tours = {
   "/": { page: "/" },
-  "/hikes": { page: "/hikes" },
+  "/hikes": { page: "/" },
 };
-
-// export and append all tours into static html page
-getHikeDirectories().forEach((categoryTitle) => {
-  const file = fs.readFileSync(
-    path.resolve(
-      __dirname,
-      `${HIKES_CONTENT_PATH}/${categoryTitle}/tours.json`
-    ),
-    "utf-8"
-  );
-  const categoryTours = JSON.parse(file).categoryTours;
-  categoryTours.forEach((t) => {
-    tours[`/${t.alias}`] = { page: "/tour" };
-  });
-});
 
 const checkTempDirExist = () => {
   return fs.existsSync("./temp");
@@ -59,4 +49,5 @@ module.exports = {
   checkUploadDirExist,
   createTempDir,
   createUploadDirExist,
+  PROD_URL,
 };

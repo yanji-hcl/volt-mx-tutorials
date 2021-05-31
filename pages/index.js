@@ -1,17 +1,21 @@
-import React,{ useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { BASE_PATH_URL, isDev } from '../src/config';
+import React, { useEffect } from "react";
+import { useRouter } from "next/router";
+import { BASE_PATH_URL, isDev } from "../src/config";
+import i18next from "i18next";
 
 const MpLanding = () => {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    // redirect to /hikes route
-    const routePath = isDev ? '/hikes' : `/${BASE_PATH_URL}/hikes`
-    router.push(routePath, undefined, { shallow: true })
-  })
-  
-  return null;
-}
+    const { pathname } = router;
+    const getProdURL = isDev ? "" : `${BASE_PATH_URL}`;
 
-export default MpLanding
+    if (pathname === "/" || pathname === "/hikes") {
+      router.push(`/${getProdURL}/${i18next.language}/hikes`);
+    }
+  });
+
+  return null;
+};
+
+export default MpLanding;

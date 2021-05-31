@@ -1,20 +1,21 @@
-import React, { Component } from 'react';
-import Button from 'antd/lib/button';
-import Input from 'antd/lib/input';
-import Col from 'antd/lib/col';
-import Modal from 'antd/lib/modal';
-import Router from 'next/router';
-import style from './style.scss';
-import getConfig from 'next/config';
+import React, { Component } from "react";
+import Button from "antd/lib/button";
+import Input from "antd/lib/input";
+import Col from "antd/lib/col";
+import Modal from "antd/lib/modal";
+import Router from "next/router";
+import style from "./style.scss";
+import getConfig from "next/config";
+import i18next from "i18next";
 const { publicRuntimeConfig } = getConfig();
 
 class HikeSearch extends Component {
   state = {
-    keyword: this.props.keyword ||  '',
+    keyword: this.props.keyword || "",
   };
 
   handleSearchClick = () => {
-    this.handleSubmit(document.getElementById('search').value);
+    this.handleSubmit(document.getElementById("search").value);
   };
 
   handleSubmit = (keyword) => {
@@ -24,7 +25,7 @@ class HikeSearch extends Component {
       Router.replace(searchUrl);
     } else {
       Modal.error({
-        title: 'Please enter minimum 3 characters',
+        title: "Please enter minimum 3 characters",
       });
       return false;
     }
@@ -36,9 +37,9 @@ class HikeSearch extends Component {
         <Col span={24} className={style.innerWrapper}>
           <Input
             id="search"
-            placeholder="Search"
+            placeholder={i18next.t("search")}
             className={style.input}
-            onPressEnter={e => this.handleSubmit(e.target.value)}
+            onPressEnter={(e) => this.handleSubmit(e.target.value)}
             autoComplete="off"
             defaultValue={this.state.keyword}
           />
@@ -49,7 +50,10 @@ class HikeSearch extends Component {
             className={style.searchIcon}
             onClick={this.handleSearchClick}
           >
-            <img src={`${publicRuntimeConfig.asset}/static/dist/images/search.svg`} alt="search icon" />
+            <img
+              src={`${publicRuntimeConfig.asset}/static/dist/images/search.svg`}
+              alt="search icon"
+            />
           </Button>
         </Col>
       </div>

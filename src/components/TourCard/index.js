@@ -1,19 +1,17 @@
 import React, { Component } from "react";
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from "next-i18next";
 import Col from "antd/lib/col";
 import Link from "next/link";
 import PropTypes from "prop-types";
 import style from "./style.scss";
 import { truncateAdvance } from "../../utils";
-import { BASE_PATH_URL } from "../../config";
-import nextI18NextConfig from '../../../next-i18next.config.js';
+import i18next from "i18next";
+import { BASE_PATH_URL, isDev } from "../../config";
 
-const isProdUrl =
-  process.env.NODE_ENV === "production" ? `${BASE_PATH_URL}/` : "";
+const getProdUrl = isDev ? "" : `/${BASE_PATH_URL}`;
 
-const TourCard = ({ tour, dbx, search }) => {
-  const { t } = useTranslation(); 
+const TourCard = ({ tour, dbx, search, language }) => {
+  const { t } = useTranslation();
 
   return (
     <Col sm={8} xs={24}>
@@ -21,7 +19,7 @@ const TourCard = ({ tour, dbx, search }) => {
         {search !== undefined && search !== null ? (
           <Link
             href={{
-              pathname: `${isProdUrl}${tour.alias}`,
+              pathname: `${getProdUrl}/${tour.alias}`,
               query: {
                 search: search,
               },
@@ -29,26 +27,35 @@ const TourCard = ({ tour, dbx, search }) => {
           >
             <div className={style.info}>
               <h2 className={`${style.title} ${dbx ? style.dbxColor : ""} `}>
-                {truncateAdvance(t(tour.title), 34)}
+                {(truncateAdvance(tour.title), 34)}
               </h2>
-              <p className={style.desc}>{t(tour.description)}</p>
-              <p className={style.meta}>{`${t(`step`, {count: tour.cards})} / ${t(tour.time)}`}</p>
+              <p className={style.desc}>{tour.description}</p>
+              <p className={style.meta}>{`${t(`step`, {
+                count: tour.cards,
+              })} / ${t(tour.time)}`}</p>
             </div>
           </Link>
         ) : (
-          <Link href={`${isProdUrl}${tour.alias}`}>
+          <Link
+            href={{
+              pathname: `${getProdUrl}/${language}/hikes/tour/${tour.alias}`,
+              alias: tour.alias,
+            }}
+          >
             <div className={style.info}>
               <h2 className={`${style.title} ${dbx ? style.dbxColor : ""} `}>
-                {truncateAdvance(t(tour.title), 34)}
+                {truncateAdvance(tour.title, 34)}
               </h2>
-              <p className={style.desc}>{t(tour.description)}</p>
-              <p className={style.meta}>{`${t(`step`, {count: tour.cards})} / ${t(tour.time)}`}</p>
+              <p className={style.desc}>{tour.description}</p>
+              <p className={style.meta}>{`11 ${i18next.t("steps")} / ${
+                tour.time
+              }`}</p>
             </div>
           </Link>
         )}
       </div>
     </Col>
-  )
+  );
 };
 
 TourCard.propTypes = {
@@ -60,11 +67,5 @@ TourCard.defaultProps = {
   tour: {},
   dbx: false,
 };
-
-export const getStaticProps = async ({ locale }) => ({
-  props: {
-    ...await serverSideTranslations(locale || nextI18NextConfig.i18n.defaultLocale, ['common'], nextI18NextConfig),
-  },
-});
 
 export default TourCard;
